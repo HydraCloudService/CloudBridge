@@ -36,7 +36,8 @@ final class CloudBridge extends PluginBase {
     public float|int $lastKeepALiveCheck = 0.0;
     private Network $network;
 
-    protected function onEnable(): void {
+    protected function onLoad(): void
+    {
         self::setInstance($this);
         if (!file_exists($this->getDataFolder() . "skins/")) mkdir($this->getDataFolder() . "skins/");
         GeneralSettings::sync();
