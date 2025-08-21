@@ -65,12 +65,15 @@ final class CloudBridge extends PluginBase {
         $this->lastKeepALiveCheck = time();
         $this->getScheduler()->scheduleRepeatingTask(new TimeoutTask(), 20);
 
+        CloudAPI::get()->processLogin();
+    }
+
+    public function onEnable(): void
+    {
         $this->registerPermission("hydracloud.command.cloud", "hydracloud.command.notify", "hydracloud.notify.receive", "hydracloud.maintenance.bypass", "hydracloud.command.transfer", "hydracloud.command.cloudnpc", "hydracloud.command.template_group", "hydracloud.cloudsign.add", "hydracloud.cloudsign.remove");
         $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new NPCListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new SignListener(), $this);
-
-        CloudAPI::get()->processLogin();
     }
 
     public function registerPermission(string... $permissions): void {
