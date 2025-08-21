@@ -36,7 +36,7 @@ final class CloudBridge extends PluginBase {
     public float|int $lastKeepALiveCheck = 0.0;
     private Network $network;
 
-    protected function onLoad(): void
+    protected function onEnable(): void
     {
         self::setInstance($this);
         if (!file_exists($this->getDataFolder() . "skins/")) mkdir($this->getDataFolder() . "skins/");
@@ -65,15 +65,12 @@ final class CloudBridge extends PluginBase {
         $this->lastKeepALiveCheck = time();
         $this->getScheduler()->scheduleRepeatingTask(new TimeoutTask(), 20);
 
-        CloudAPI::get()->processLogin();
-    }
-
-    public function onEnable(): void
-    {
         $this->registerPermission("hydracloud.command.cloud", "hydracloud.command.notify", "hydracloud.notify.receive", "hydracloud.maintenance.bypass", "hydracloud.command.transfer", "hydracloud.command.cloudnpc", "hydracloud.command.template_group", "hydracloud.cloudsign.add", "hydracloud.cloudsign.remove");
         $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new NPCListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new SignListener(), $this);
+
+        CloudAPI::get()->processLogin();
     }
 
     public function registerPermission(string... $permissions): void {
