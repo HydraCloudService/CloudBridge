@@ -7,8 +7,10 @@ use hydracloud\cloud\bridge\api\object\player\CloudPlayer;
 use hydracloud\cloud\bridge\network\Network;
 use hydracloud\cloud\bridge\network\packet\impl\normal\PlayerConnectPacket;
 use hydracloud\cloud\bridge\network\packet\impl\normal\PlayerDisconnectPacket;
+use hydracloud\cloud\bridge\network\packet\impl\request\CheckPlayerExistsRequestPacket;
 use hydracloud\cloud\bridge\network\packet\impl\request\CheckPlayerMaintenanceRequestPacket;
 use hydracloud\cloud\bridge\network\packet\impl\request\CheckPlayerNotifyRequestPacket;
+use hydracloud\cloud\bridge\network\packet\impl\response\CheckPlayerExistsResponsePacket;
 use hydracloud\cloud\bridge\network\packet\impl\response\CheckPlayerMaintenanceResponsePacket;
 use hydracloud\cloud\bridge\network\packet\impl\response\CheckPlayerNotifyResponsePacket;
 use hydracloud\cloud\bridge\network\request\RequestManager;
@@ -21,25 +23,37 @@ final class EventListener implements Listener {
 
     public function onLogin(PlayerLoginEvent $event): void {
         $player = $event->getPlayer();
-        Network::getInstance()->sendPacket(new PlayerConnectPacket(CloudPlayer::fromPlayer($player)));
+        CheckPlayerExistsRequestPacket::makeRequest($player->getName())
+            ->then(function (CheckPlayerExistsResponsePacket $packet) use ($player): void{
+                if ($packet->getValue()) {
+                    Network::getInstance()->sendPacket(new PlayerConnectPacket(CloudPlayer::fromPlayer($player)));
 
-        if (CloudAPI::templates()->current()->isMaintenance()) {
-            CheckPlayerMaintenanceRequestPacket::makeRequest($player->getName())
-                ->then(function (CheckPlayerMaintenanceResponsePacket $packet) use($player): void {
-                    if (!$packet->getValue() && !$player->hasPermission("hydracloud.maintenance.bypass")) {
-                        $player->kick("§cThis server is in maintenance.");
+                    if (CloudAPI::templates()->current()->isMaintenance()) {
+                        CheckPlayerMaintenanceRequestPacket::makeRequest($player->getName())
+                            ->then(function (CheckPlayerMaintenanceResponsePacket $packet) use($player): void {
+                                if (!$packet->getValue() && !$player->hasPermission("hydracloud.maintenance.bypass")) {
+                                    $player->kick("§cThis server is in maintenance.");
+                                }
+                            });
                     }
-                });
-        }
 
-        CheckPlayerNotifyRequestPacket::makeRequest($player->getName())
-            ->then(function (CheckPlayerNotifyResponsePacket $packet) use($player): void {
-                if ($packet->getValue()) NotifyList::put($player);
+                    CheckPlayerNotifyRequestPacket::makeRequest($player->getName())
+                        ->then(function (CheckPlayerNotifyResponsePacket $packet) use($player): void {
+                            if ($packet->getValue()) NotifyList::put($player);
+                        });
+                } else {
+                    $player->kick("§cYou must join via the proxy server.");
+                }
             });
     }
 
     public function onQuit(PlayerQuitEvent $event): void {
         $player = $event->getPlayer();
-        Network::getInstance()->sendPacket(new PlayerDisconnectPacket($player->getName()));
+        CheckPlayerExistsRequestPacket::makeRequest($player->getName())
+            ->then(function (CheckPlayerExistsResponsePacket $packet) use ($player): void {
+                if ($packet->getValue()) {
+                    Network::getInstance()->sendPacket(new PlayerDisconnectPacket($player->getName()));
+                }
+            });
     }
 }

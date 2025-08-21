@@ -7,7 +7,9 @@ use hydracloud\cloud\bridge\network\packet\CloudPacket;
 use hydracloud\cloud\bridge\network\packet\impl\normal\DisconnectPacket;
 use hydracloud\cloud\bridge\network\packet\impl\normal\KeepAlivePacket;
 use hydracloud\cloud\bridge\network\packet\impl\normal\LanguageSyncPacket;
+use hydracloud\cloud\bridge\network\packet\impl\request\CheckPlayerExistsRequestPacket;
 use hydracloud\cloud\bridge\network\packet\impl\request\ServerHandshakeRequestPacket;
+use hydracloud\cloud\bridge\network\packet\impl\response\CheckPlayerExistsResponsePacket;
 use hydracloud\cloud\bridge\network\packet\impl\response\ServerHandshakeResponsePacket;
 use hydracloud\cloud\bridge\network\packet\impl\normal\CloudNotifyPacket;
 use hydracloud\cloud\bridge\network\packet\impl\normal\CloudServerSavePacket;
@@ -77,6 +79,8 @@ final class PacketPool {
         $this->registerPacket(CheckPlayerMaintenanceResponsePacket::class);
         $this->registerPacket(CheckPlayerNotifyRequestPacket::class);
         $this->registerPacket(CheckPlayerNotifyResponsePacket::class);
+        $this->registerPacket(CheckPlayerExistsRequestPacket::class);
+        $this->registerPacket(CheckPlayerExistsResponsePacket::class);
         $this->registerPacket(CloudNotifyPacket::class);
         $this->registerPacket(ModuleSyncPacket::class);
         $this->registerPacket(LibrarySyncPacket::class);
