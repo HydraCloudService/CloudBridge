@@ -49,10 +49,11 @@ final class EventListener implements Listener {
 
     public function onQuit(PlayerQuitEvent $event): void {
         $player = $event->getPlayer();
+        $name = $player->getName();
         CheckPlayerExistsRequestPacket::makeRequest($player->getName())
-            ->then(function (CheckPlayerExistsResponsePacket $packet) use ($player): void {
+            ->then(function (CheckPlayerExistsResponsePacket $packet) use ($name): void {
                 if ($packet->getValue()) {
-                    Network::getInstance()->sendPacket(new PlayerDisconnectPacket($player->getName()));
+                    Network::getInstance()->sendPacket(new PlayerDisconnectPacket($name));
                 }
             });
     }

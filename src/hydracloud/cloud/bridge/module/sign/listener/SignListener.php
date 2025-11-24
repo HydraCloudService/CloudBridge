@@ -32,7 +32,7 @@ final class SignListener implements Listener {
             if (Server::getInstance()->getTick() >= CloudBridge::getInstance()->signDelay[$event->getPlayer()->getName()]) {
                 CloudBridge::getInstance()->signDelay[$event->getPlayer()->getName()] = Server::getInstance()->getTick() + 10;
                 if ($sign->hasUsingServer() && !$sign->getUsingServer()->getTemplate()->isMaintenance()) {
-                    if (CloudAPI::servers()->current()?->getName() == $sign->getUsingServer()->getName()) {
+                    if (CloudAPI::servers()->current() != null && CloudAPI::servers()->current()?->getName() == $sign->getUsingServer()->getName()) {
                         $event->getPlayer()->sendMessage(Language::current()->translate("inGame.server.already.connected", $sign->getUsingServer()->getName()));
                     } else {
                         $event->getPlayer()->sendMessage(Language::current()->translate("inGame.server.connect", $sign->getUsingServer()->getName()));

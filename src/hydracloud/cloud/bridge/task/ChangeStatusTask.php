@@ -10,6 +10,7 @@ use pocketmine\Server;
 final class ChangeStatusTask extends Task {
 
     public function onRun(): void {
+        if (CloudAPI::servers()->current() == null) return;
         if (CloudAPI::servers()->current()->getServerStatus() === ServerStatus::IN_GAME() || CloudAPI::servers()->current()?->getServerStatus() === ServerStatus::STOPPING()) return;
         if (count(Server::getInstance()->getOnlinePlayers()) >= (CloudAPI::templates()->current()->getMaxPlayerCount() ?? Server::getInstance()->getMaxPlayers())) {
             CloudAPI::get()->changeStatus(ServerStatus::FULL());
