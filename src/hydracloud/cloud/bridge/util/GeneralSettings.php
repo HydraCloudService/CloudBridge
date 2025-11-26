@@ -12,6 +12,7 @@ final class GeneralSettings {
         "server_name" => "unknown",
         "template_name" => "unknown",
         "cloud_path" => "unknown",
+        "cloud_password" => "unknown",
         "language" => "en_US"
     ];
 
@@ -21,6 +22,7 @@ final class GeneralSettings {
         self::$data["server_name"] = Server::getInstance()->getConfigGroup()->getConfigString("server-name", "unknown");
         self::$data["template_name"] = Server::getInstance()->getConfigGroup()->getConfigString("template", "unknown");
         self::$data["cloud_path"] = Server::getInstance()->getConfigGroup()->getConfigString("cloud-path", "unknown");
+        self::$data["cloud_password"] = Server::getInstance()->getConfigGroup()->getConfigString("cloud-password", "unknown");
         self::$data["language"] = Server::getInstance()->getConfigGroup()->getConfigString("cloud-language", "unknown");
     }
 
@@ -38,6 +40,10 @@ final class GeneralSettings {
 
     public static function getCloudPath(): string {
         return self::$data["cloud_path"];
+    }
+
+    public static function getCloudPassword(): string {
+        return self::$data["cloud_password"];
     }
 
     public static function getLanguage(): string {

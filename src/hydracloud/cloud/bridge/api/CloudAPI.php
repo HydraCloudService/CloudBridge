@@ -41,7 +41,7 @@ final class CloudAPI {
     public function processLogin(): void {
         if ($this->verified === VerifyStatus::VERIFIED()) return;
         ServerHandshakeRequestPacket::makeRequest(
-            GeneralSettings::getServerName(), getmypid(), Server::getInstance()->getMaxPlayers()
+            GeneralSettings::getServerName(), GeneralSettings::getCloudPassword(), getmypid(), Server::getInstance()->getMaxPlayers()
         )->then(function (ServerHandshakeResponsePacket $packet): void {
             if ($packet->getVerifyStatus() === VerifyStatus::VERIFIED()) {
                 CloudBridge::getInstance()->getScheduler()->scheduleRepeatingTask(new ChangeStatusTask(), 20);

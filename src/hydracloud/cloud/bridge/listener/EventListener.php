@@ -13,7 +13,6 @@ use hydracloud\cloud\bridge\network\packet\impl\request\CheckPlayerNotifyRequest
 use hydracloud\cloud\bridge\network\packet\impl\response\CheckPlayerExistsResponsePacket;
 use hydracloud\cloud\bridge\network\packet\impl\response\CheckPlayerMaintenanceResponsePacket;
 use hydracloud\cloud\bridge\network\packet\impl\response\CheckPlayerNotifyResponsePacket;
-use hydracloud\cloud\bridge\network\request\RequestManager;
 use hydracloud\cloud\bridge\util\NotifyList;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerLoginEvent;
