@@ -23,7 +23,9 @@ use pocketmine\permission\DefaultPermissions;
 use pocketmine\permission\Permission;
 use pocketmine\permission\PermissionManager;
 use pocketmine\plugin\PluginBase;
+use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
+use pocketmine\YmlServerProperties;
 
 final class CloudBridge extends PluginBase {
     use SingletonTrait;
@@ -39,6 +41,10 @@ final class CloudBridge extends PluginBase {
     protected function onEnable(): void
     {
         self::setInstance($this);
+        $configGroup = Server::getInstance()->getConfigGroup();
+        $configGroup->setConfigBool(YmlServerProperties::AUTO_REPORT_SEND_SETTINGS, false);
+        $configGroup->save();
+
         if (!file_exists($this->getDataFolder() . "skins/")) mkdir($this->getDataFolder() . "skins/");
         GeneralSettings::sync();
 
