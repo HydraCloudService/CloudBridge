@@ -71,24 +71,13 @@ final class CloudNPCModule extends BaseModule {
 
         var_dump($this->getNPCConfig()->getAll());
         foreach ($this->getNPCConfig()->getAll() as $positionString => $npcData) {
-            $cloudNPC = CloudNPC::fromArray($this->checkForMigration($npcData));
+            $cloudNPC = CloudNPC::fromArray($npcData);
             var_dump($cloudNPC);
             if ($cloudNPC !== null && $positionString == $npcData["position"]) {
                 $this->npcs[$positionString] = $cloudNPC;
                 $cloudNPC->spawnEntity();
             }
         }
-    }
-
-    private function checkForMigration(array $data): array {
-        foreach (["Template" => "template", "Position" => "position", "Creator" => "creator"] as $key => $newKey) {
-            if (isset($data[$key])) {
-                $data[$newKey] = $data[$key];
-                unset($data[$key]);
-            }
-        }
-
-        return $data;
     }
 
     public function addCloudNPC(CloudNPC $npc): bool {
