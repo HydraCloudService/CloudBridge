@@ -17,6 +17,7 @@ use hydracloud\cloud\bridge\util\SkinSaver;
 use hydracloud\cloud\bridge\util\Utils;
 use pocketmine\entity\Human;
 use pocketmine\entity\Location;
+use pocketmine\math\Vector3;
 use pocketmine\world\Position;
 
 final class CloudNPC {
@@ -168,6 +169,7 @@ final class CloudNPC {
     }
 
     public static function fromArray(array $data): ?CloudNPC {
+        var_dump($data);
         if (Utils::containKeys($data, "group_id", "position", "creator", "skin_model") || Utils::containKeys($data, "template", "position", "creator", "skin_model")) {
             $headRotation = !isset($data["head_rotation"]) || !is_bool($data["head_rotation"]) || $data["head_rotation"];
             if ($data["skin_model"] !== null) $data["skin_model"] = CloudNPCModule::get()->getSkinModel($data["skin_model"]);
@@ -184,7 +186,7 @@ final class CloudNPC {
 
             /** @var Location $position */
             $position = Utils::convertToVector($data["position"]);
-            if (($template = CloudAPI::templates()->get($data["template"])) !== null && $position instanceof Position) {
+            if (($template = CloudAPI::templates()->get($data["template"])) !== null && $position instanceof Position || $position instanceof Location) {
                 return new CloudNPC($template, $position, $data["creator"], $data["skin_model"], $headRotation);
             }
         }
