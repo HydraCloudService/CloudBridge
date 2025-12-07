@@ -227,6 +227,7 @@ final class CloudNPCModule extends BaseModule {
     }
 
     public function getCloudNPC(Position|Location|Vector3 $position): ?CloudNPC {
+        var_dump(Utils::convertToString($position->asVector3()));
         return $this->npcs[Utils::convertToString($position->asVector3())] ?? null;
     }
 
