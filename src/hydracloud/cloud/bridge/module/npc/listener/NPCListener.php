@@ -52,7 +52,7 @@ final class NPCListener implements Listener {
         $entity = $event->getEntity();
         $damager = $event->getDamager();
 
-        if (($cloudNPC = CloudNPCModule::get()->getCloudNPC($entity->getPosition())) !== null) {
+        if (($cloudNPC = CloudNPCModule::get()->getCloudNPC($entity->getLocation())) !== null) {
             $event->cancel();
             if ($damager instanceof Player) {
                 if (isset(CloudNPCModule::get()->npcDetection[$damager->getName()])) {

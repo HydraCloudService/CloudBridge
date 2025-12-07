@@ -13,7 +13,9 @@ use hydracloud\cloud\bridge\module\npc\group\TemplateGroup;
 use hydracloud\cloud\bridge\module\npc\listener\NPCListener;
 use hydracloud\cloud\bridge\module\npc\skin\CustomSkinModel;
 use hydracloud\cloud\bridge\util\Utils;
+use pocketmine\entity\Location;
 use pocketmine\event\HandlerListManager;
+use pocketmine\math\Vector3;
 use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\world\Position;
@@ -67,8 +69,11 @@ final class CloudNPCModule extends BaseModule {
             }
         }
 
+        var_dump($this->getNPCConfig()->getAll());
         foreach ($this->getNPCConfig()->getAll() as $positionString => $npcData) {
-            if (($cloudNPC = CloudNPC::fromArray($this->checkForMigration($npcData))) !== null && $positionString == $npcData["position"]) {
+            $cloudNPC = CloudNPC::fromArray($this->checkForMigration($npcData));
+            var_dump($cloudNPC);
+            if ($cloudNPC !== null && $positionString == $npcData["position"]) {
                 $this->npcs[$positionString] = $cloudNPC;
                 $cloudNPC->spawnEntity();
             }
@@ -228,12 +233,12 @@ final class CloudNPCModule extends BaseModule {
         return true;
     }
 
-    public function checkCloudNPC(Position $position): bool {
+    public function checkCloudNPC(Position|Location|Vector3 $position): bool {
         return isset($this->npcs[Utils::convertToString($position)]);
     }
 
-    public function getCloudNPC(Position $position): ?CloudNPC {
-        return $this->npcs[Utils::convertToString($position)] ?? null;
+    public function getCloudNPC(Position|Location|Vector3 $position): ?CloudNPC {
+        return $this->npcs[Utils::convertToString($position->asVector3())] ?? null;
     }
 
     /** @return array<CloudNPC> */

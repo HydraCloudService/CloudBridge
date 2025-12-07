@@ -19,7 +19,7 @@ final class Utils {
         return true;
     }
 
-    public static function convertToString(Vector3 $vector): string {
+    public static function convertToString(Position|Location|Vector3 $vector): string {
         return match ($vector::class) {
             Location::class => $vector->getX() . ":" . $vector->getY() . ":" . $vector->getZ() . ":" . $vector->getWorld()->getFolderName() . ":" . $vector->getYaw() . ":" . $vector->getPitch(),
             Position::class => $vector->getX() . ":" . $vector->getY() . ":" . $vector->getZ() . ":" . $vector->getWorld()->getFolderName(),
