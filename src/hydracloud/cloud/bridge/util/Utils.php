@@ -13,9 +13,8 @@ final class Utils {
 
     public static function containKeys(array $array, ...$keys): bool {
         foreach ($keys as $key) {
-            if (!isset($array[$key])) return false;
+            if (!array_key_exists($key, $array)) return false;
         }
-
         return true;
     }
 

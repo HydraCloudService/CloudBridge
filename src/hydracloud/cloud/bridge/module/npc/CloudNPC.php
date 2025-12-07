@@ -186,7 +186,8 @@ final class CloudNPC {
 
             /** @var Location $position */
             $position = Utils::convertToVector($data["position"]);
-            if (($template = CloudAPI::templates()->get($data["template"])) !== null && $position instanceof Position || $position instanceof Location) {
+            if (($template = CloudAPI::templates()->get($data["template"])) !== null
+                && ($position instanceof Position)) {
                 return new CloudNPC($template, $position, $data["creator"], $data["skin_model"], $headRotation);
             }
         }
