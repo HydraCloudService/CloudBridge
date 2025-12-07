@@ -29,6 +29,7 @@ final class Utils {
 
     public static function convertToVector(string $string): Vector3 {
         $explode = explode(":", $string);
+        var_dump(count($explode));
         return match (count($explode)) {
             6 => new Location(floatval($explode[0]), floatval($explode[1]), floatval($explode[2]), Server::getInstance()->getWorldManager()->getWorldByName($explode[3]), floatval($explode[4]), floatval($explode[5])),
             4 => new Position(floatval($explode[0]), floatval($explode[1]), floatval($explode[2]), Server::getInstance()->getWorldManager()->getWorldByName($explode[3])),
