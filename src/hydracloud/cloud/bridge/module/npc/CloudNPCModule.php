@@ -69,10 +69,8 @@ final class CloudNPCModule extends BaseModule {
             }
         }
 
-        var_dump($this->getNPCConfig()->getAll());
         foreach ($this->getNPCConfig()->getAll() as $positionString => $npcData) {
             $cloudNPC = CloudNPC::fromArray($npcData);
-            var_dump($cloudNPC);
             if ($cloudNPC !== null && $positionString == $npcData["position"]) {
                 $this->npcs[$positionString] = $cloudNPC;
                 $cloudNPC->spawnEntity();
