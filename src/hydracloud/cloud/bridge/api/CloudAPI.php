@@ -8,6 +8,7 @@ use hydracloud\cloud\bridge\api\provider\PlayerProvider;
 use hydracloud\cloud\bridge\api\provider\ServerProvider;
 use hydracloud\cloud\bridge\api\provider\TemplateProvider;
 use hydracloud\cloud\bridge\CloudBridge;
+use hydracloud\cloud\bridge\event\server\CloudServerRegisterEvent;
 use hydracloud\cloud\bridge\language\Language;
 use hydracloud\cloud\bridge\network\packet\impl\normal\CloudServerStatusChangePacket;
 use hydracloud\cloud\bridge\network\packet\impl\normal\ConsoleTextPacket;
