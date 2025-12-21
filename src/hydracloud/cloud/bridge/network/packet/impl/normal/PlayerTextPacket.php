@@ -55,13 +55,15 @@ class PlayerTextPacket extends CloudPacket {
             $body = implode("\n", $explode);
         }
 
-        if ($this->player == "*") {
-            if ($this->textType === TextType::MESSAGE()) Server::getInstance()->broadcastMessage($this->message);
-            else if ($this->textType === TextType::POPUP()) Server::getInstance()->broadcastPopup($this->message);
-            else if ($this->textType === TextType::TIP()) Server::getInstance()->broadcastTip($this->message);
-            else if ($this->textType === TextType::TITLE()) Server::getInstance()->broadcastTitle($this->message);
-            else if ($this->textType === TextType::ACTION_BAR()) NetworkBroadcastUtils::broadcastPackets(Server::getInstance()->getOnlinePlayers(), [SetTitlePacket::actionBarMessage($this->message)]);
-            else if ($this->textType === TextType::TOAST_NOTIFICATION()) NetworkBroadcastUtils::broadcastPackets(Server::getInstance()->getOnlinePlayers(), [ToastRequestPacket::create($title, $body)]);
+        if ($this->player === "*") {
+            foreach (Server::getInstance()->getOnlinePlayers() as $player) {
+                if ($this->textType === TextType::MESSAGE()) $player->sendMessage($this->message);
+                else if ($this->textType === TextType::POPUP()) $player->sendPopup($this->message);
+                else if ($this->textType === TextType::TIP()) $player->sendTip($this->message);
+                else if ($this->textType === TextType::TITLE()) $player->sendTitle($this->message);
+                else if ($this->textType === TextType::ACTION_BAR()) $player->sendActionBarMessage($this->message);
+                else if ($this->textType === TextType::TOAST_NOTIFICATION()) $player->sendToastNotification($title, $body);
+            }
         } else if (($player = Server::getInstance()->getPlayerExact($this->getPlayer())) !== null) {
             if ($this->textType === TextType::MESSAGE()) $player->sendMessage($this->message);
             else if ($this->textType === TextType::POPUP()) $player->sendPopup($this->message);
