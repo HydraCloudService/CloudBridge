@@ -73,6 +73,7 @@ final class CloudServer {
         return [
             "name" => $this->getName(),
             "id" => $this->id,
+            "uuid" => $this->uuid,
             "template" => $this->template->getName(),
             "port" => $this->getCloudServerData()->getPort(),
             "maxPlayers" => $this->getCloudServerData()->getMaxPlayers(),
@@ -82,10 +83,11 @@ final class CloudServer {
     }
 
     public static function fromArray(array $server): ?CloudServer {
-        if (!Utils::containKeys($server, "name", "id", "template", "port", "maxPlayers", "processId", "serverStatus")) return null;
+        if (!Utils::containKeys($server, "name", "id", "uuid", "template", "port", "maxPlayers", "processId", "serverStatus")) return null;
         if (($template = CloudAPI::templates()->get($server["template"])) === null) return null;
         return new CloudServer(
             intval($server["id"]),
+            $server["uuid"],
             $template,
             new CloudServerData(intval($server["port"]), intval($server["maxPlayers"]), intval($server["processId"])),
             ServerStatus::get($server["serverStatus"]) ?? ServerStatus::ONLINE()
