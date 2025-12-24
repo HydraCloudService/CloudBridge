@@ -16,6 +16,7 @@ final class CloudServer {
 
     public function __construct(
         private readonly int $id,
+        private readonly string $uuid,
         private readonly Template $template,
         private readonly CloudServerData $cloudServerData,
         private ServerStatus $serverStatus
@@ -25,6 +26,13 @@ final class CloudServer {
 
     public function getName(): string {
         return $this->template->getName() . "-" . $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUuid(): string {
+        return $this->uuid;
     }
 
     public function getId(): int {

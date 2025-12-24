@@ -116,6 +116,7 @@ final class CloudCommand extends Command {
                             foreach (CloudAPI::templates()->getAll() as $template) {
                                 $sender->sendMessage(
                                     CloudBridge::getPrefix() . "§e" . $template->getName() .
+                                    " §8- §7isStatic: §a" . ($template->isStatic() ? "§aYES" : "§cNO") .
                                     " §8- §7isLobby: §a" . ($template->isLobby() ? "§aYES" : "§cNO") .
                                     " §8- §7isMaintenance: §a" . ($template->isMaintenance() ? "§aYES" : "§cNO") .
                                     " §8- §7MinServerCount: §e" . $template->getMinServerCount() .
@@ -130,6 +131,7 @@ final class CloudCommand extends Command {
                             foreach (CloudAPI::servers()->getAll() as $server) {
                                 $sender->sendMessage(
                                     CloudBridge::getPrefix() . "§e" . $server->getName() .
+                                    " §8- §7UUID: §e" . $server->getUUID() .
                                     " §8- §7Port: §e" . $server->getCloudServerData()->getPort() . " §8| §7IPv6: §e" . $server->getCloudServerData()->getPort()+1 .
                                     " §8- §7Template: §e" . $server->getTemplate()->getName() .
                                     " §8- §7Players: §e" . count($server->getCloudPlayers()) . "§8/§e" . $server->getCloudServerData()->getMaxPlayers() . " §8(§e" . $server->getTemplate()->getMaxPlayerCount() . "§8)" .
@@ -142,6 +144,7 @@ final class CloudCommand extends Command {
                             foreach (CloudAPI::players()->getAll() as $player) {
                                 $sender->sendMessage(
                                     CloudBridge::getPrefix() . "§e" . $player->getName() .
+                                    " §8- §7Host: §e" . $player->getHost() .
                                     " §8- §7XboxUserId: §e" . $player->getXboxUserId() .
                                     " §8- §7UniqueId: §e" . $player->getUniqueId() .
                                     " §8- §7Server: §e" . ($player->getCurrentServer() === null ? "§cNo server." : $player->getCurrentServer()->getName()) .
@@ -167,6 +170,7 @@ final class CloudCommand extends Command {
                             if (($template = CloudAPI::templates()->get($args[1])) !== null) {
                                 $sender->sendMessage(
                                     CloudBridge::getPrefix() . "§e" . $template->getName() .
+                                    " §8- §7isStatic: §a" . ($template->isStatic() ? "§aYES" : "§cNO") .
                                     " §8- §7isLobby: §a" . ($template->isLobby() ? "§aYES" : "§cNO") .
                                     " §8- §7isMaintenance: §a" . ($template->isMaintenance() ? "§aYES" : "§cNO") .
                                     " §8- §7MinServerCount: §e" . $template->getMinServerCount() .
@@ -181,6 +185,7 @@ final class CloudCommand extends Command {
                             if (($server = CloudAPI::servers()->get($args[1])) !== null) {
                                 $sender->sendMessage(
                                     CloudBridge::getPrefix() . "§e" . $server->getName() .
+                                    " §8- §7UUID: §e" . $server->getUUID() .
                                     " §8- §7Port: §e" . $server->getCloudServerData()->getPort() . " §8| §7IPv6: §e" . $server->getCloudServerData()->getPort()+1 .
                                     " §8- §7Template: §e" . $server->getTemplate()->getName() .
                                     " §8- §7Players: §e" . count($server->getCloudPlayers()) . "§8/§e" . $server->getCloudServerData()->getMaxPlayers() .
@@ -193,6 +198,7 @@ final class CloudCommand extends Command {
                             if (($player = CloudAPI::players()->get($args[1])) !== null) {
                                 $sender->sendMessage(
                                     CloudBridge::getPrefix() . "§e" . $player->getName() .
+                                    " §8- §7Host: §e" . $player->getHost() .
                                     " §8- §7XboxUserId: §e" . $player->getXboxUserId() .
                                     " §8- §7UniqueId: §e" . $player->getUniqueId() .
                                     " §8- §7Server: §e" . ($player->getCurrentServer() === null ? "§cNo server." : $player->getCurrentServer()->getName()) .
