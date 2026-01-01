@@ -1,0 +1,61 @@
+<?php
+
+namespace hydracloud\cloud\bridge\api\object\server\storage;
+
+use hydracloud\cloud\bridge\api\object\server\CloudServer;
+use hydracloud\cloud\bridge\network\Network;
+use hydracloud\cloud\bridge\network\packet\impl\normal\CloudServerSyncStoragePacket;
+use hydracloud\cloud\bridge\util\GeneralSettings;
+
+final class CloudServerStorage {
+
+    public function __construct(
+        private readonly CloudServer $server,
+        private array $storage = []
+    ) {}
+
+    /** @internal  */
+    public function sync(array $data): void {
+        $this->storage = $data;
+    }
+
+    private function sendSyncPacket(): void {
+        if ($this->server->getName() == GeneralSettings::getServerName()) Network::getInstance()->sendPacket(new CloudServerSyncStoragePacket($this->storage));
+    }
+
+    public function set(string $k, mixed $v): self {
+        $this->storage[$k] = $v;
+        $this->sendSyncPacket();
+        return $this;
+    }
+
+    public function remove(string $k): self {
+        if (isset($this->storage[$k])) {
+            unset($this->storage[$k]);
+            $this->sendSyncPacket();
+        }
+        return $this;
+    }
+
+    public function has(string $k): bool {
+        return isset($this->storage[$k]);
+    }
+
+    public function get(string $k, mixed $default = null): mixed {
+        return $this->storage[$k] ?? $default;
+    }
+
+    public function clear(): self {
+        $this->storage = [];
+        $this->sendSyncPacket();
+        return $this;
+    }
+
+    public function getServer(): CloudServer {
+        return $this->server;
+    }
+
+    public function getStorage(): array {
+        return $this->storage;
+    }
+}

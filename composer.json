@@ -1,0 +1,7 @@
+{
+    "require": {
+        "pocketmine/snooze": "^0.5.0",
+        "ext-pmmpthread": "*",
+        "ext-sockets": "*"
+    }
+}

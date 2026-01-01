@@ -1,0 +1,15 @@
+<?php
+
+namespace hydracloud\cloud\bridge\module\npc\task;
+
+use hydracloud\cloud\bridge\module\npc\CloudNPC;
+use pocketmine\scheduler\Task;
+
+final class CloudNPCTickTask extends Task {
+
+    public function __construct(private readonly CloudNPC $cloudNPC) {}
+
+    public function onRun(): void {
+        $this->cloudNPC->tick();
+    }
+}
