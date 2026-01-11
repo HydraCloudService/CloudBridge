@@ -61,19 +61,31 @@ final class NPCListener implements Listener {
                         $damager->sendMessage(Language::current()->translate("inGame.cloudnpc.removed"));
                     } else $damager->sendMessage(CloudBridge::getPrefix() . "§cAn error occurred while removing the npc. Please report that incident on our discord.");
                 } else {
-                    $servers = array_filter(
-                        $cloudNPC->getServers(),
-                        fn(CloudServer $server) => $server->getName() !== GeneralSettings::getServerName() &&
-                            $server->getServerStatus() === ServerStatus::ONLINE() &&
-                            !($server->getTemplate()->isMaintenance() && !$damager->hasPermission("hydracloud.maintenance.bypass"))
-                    );
+                    $servers = array_filter($cloudNPC->getServers(), fn(CloudServer $server) => $server->getName() !== GeneralSettings::getServerName() && $server->getServerStatus() === ServerStatus::ONLINE() && !($server->getTemplate()->isMaintenance() && !$damager->hasPermission("hydracloud.maintenance.bypass")));
 
-                    $name = $cloudNPC->hasTemplateGroup() ? $cloudNPC->getTemplate()->getDisplayName() : $cloudNPC->getTemplate()->getName();
-                    $damager->sendForm(new MenuForm(
-                        Language::current()->translate("inGame.ui.cloudnpc.choose_server.title", $name),
-                        Language::current()->translate("inGame.ui.cloudnpc.choose_server.text", count($servers), $name),
-                        (count($servers) == 0 ? [new MenuOption(Language::current()->translate("inGame.ui.cloudnpc.choose_server.no.server"))] : array_map(fn(CloudServer $server) => new MenuOption(Language::current()->translate("inGame.ui.cloudnpc.choose_server.button.server", $server->getName(), count($server->getCloudPlayers()), $server->getCloudServerData()->getMaxPlayers())), $servers)),
-                        function(Player $player, int $data) use($servers): void {
+                    $hasTemplateGroup = $cloudNPC->hasTemplateGroup();
+                    $name = $hasTemplateGroup ? $cloudNPC->getTemplate()->getDisplayName() : $cloudNPC->getTemplate()->getName();
+
+                    if ($hasTemplateGroup) {
+                        $damager->sendForm(new MenuForm(Language::current()->translate("inGame.ui.cloudnpc.choose_template.title", $cloudNPC->getTemplate()->getDisplayName()), Language::current()->translate("inGame.ui.cloudnpc.choose_template.text", $cloudNPC->getTemplate()->getDisplayName()), array_map(fn(string $template) => new MenuOption(Language::current()->translate("inGame.ui.cloudnpc.choose_template.button.template", $template, count(CloudAPI::players()->getAll($template = CloudAPI::templates()->get($template))), $template->getMaxPlayerCount())), $templates = $cloudNPC->getTemplate()->getTemplates()), function (Player $player, int $data) use ($templates): void {
+                            $template = $templates[$data];
+                            if (($template = CloudAPI::templates()->get($template)) !== null) {
+                                $name = $template->getName();
+                                $servers = array_filter(CloudAPI::servers()->getAll($template), fn(CloudServer $server) => $server->getName() !== GeneralSettings::getServerName() && $server->getServerStatus() === ServerStatus::ONLINE() && !($server->getTemplate()->isMaintenance() && !$player->hasPermission("hydracloud.maintenance.bypass")));
+
+                                $player->sendForm(new MenuForm(Language::current()->translate("inGame.ui.cloudnpc.choose_server.title", $name), Language::current()->translate("inGame.ui.cloudnpc.choose_server.text", count($servers), $name), (count($servers) == 0 ? [new MenuOption(Language::current()->translate("inGame.ui.cloudnpc.choose_server.no.server"))] : array_map(fn(CloudServer $server) => new MenuOption(Language::current()->translate("inGame.ui.cloudnpc.choose_server.button.server", $server->getName(), count($server->getCloudPlayers()), $server->getCloudServerData()->getMaxPlayers())), $servers)), function (Player $player, int $data) use ($servers): void {
+                                    /** @var CloudServer $server */
+                                    if (($server = ($servers[$data] ?? null)) instanceof CloudServer) {
+                                        $player->sendMessage(Language::current()->translate("inGame.server.connect", $server->getName()));
+                                        if (!CloudAPI::players()->transfer($player, $server)) {
+                                            $player->sendMessage(Language::current()->translate("inGame.server.connect.failed", $server->getName()));
+                                        }
+                                    }
+                                }));
+                            }
+                        }));
+                    } else {
+                        $damager->sendForm(new MenuForm(Language::current()->translate("inGame.ui.cloudnpc.choose_server.title", $name), Language::current()->translate("inGame.ui.cloudnpc.choose_server.text", count($servers), $name), (count($servers) == 0 ? [new MenuOption(Language::current()->translate("inGame.ui.cloudnpc.choose_server.no.server"))] : array_map(fn(CloudServer $server) => new MenuOption(Language::current()->translate("inGame.ui.cloudnpc.choose_server.button.server", $server->getName(), count($server->getCloudPlayers()), $server->getCloudServerData()->getMaxPlayers())), $servers)), function (Player $player, int $data) use ($servers): void {
                             /** @var CloudServer $server */
                             if (($server = ($servers[$data] ?? null)) instanceof CloudServer) {
                                 $player->sendMessage(Language::current()->translate("inGame.server.connect", $server->getName()));
@@ -81,8 +93,8 @@ final class NPCListener implements Listener {
                                     $player->sendMessage(Language::current()->translate("inGame.server.connect.failed", $server->getName()));
                                 }
                             }
-                        }
-                    ));
+                        }));
+                    }
                 }
             }
         }
@@ -103,7 +115,7 @@ final class NPCListener implements Listener {
                 if (($trData = $packet->trData) instanceof UseItemOnEntityTransactionData) {
                     if ($trData->getActionType() !== $trData::ACTION_ATTACK) {
                         if (($entity = $player->getWorld()->getEntity($trData->getActorRuntimeId())) !== null) {
-                            if (($cloudNPC = CloudNPCModule::get()->getCloudNPC($entity->getPosition())) !== null) {
+                            if (($cloudNPC = CloudNPCModule::get()->getCloudNPC($entity->getLocation())) !== null) {
                                 if (!isset(CloudNPCModule::get()->npcDelay[$player->getName()])) CloudNPCModule::get()->npcDelay[$player->getName()] = 0;
                                 if (Server::getInstance()->getTick() >= CloudNPCModule::get()->npcDelay[$player->getName()]) {
                                     CloudNPCModule::get()->npcDelay[$player->getName()] = Server::getInstance()->getTick() + 10;

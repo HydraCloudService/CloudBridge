@@ -15,10 +15,8 @@ use hydracloud\cloud\bridge\module\npc\skin\CustomSkinModel;
 use hydracloud\cloud\bridge\util\Utils;
 use pocketmine\entity\Location;
 use pocketmine\event\HandlerListManager;
-use pocketmine\math\Vector3;
 use pocketmine\Server;
 use pocketmine\utils\Config;
-use pocketmine\world\Position;
 
 final class CloudNPCModule extends BaseModule {
 
@@ -220,11 +218,11 @@ final class CloudNPCModule extends BaseModule {
         return true;
     }
 
-    public function checkCloudNPC(Position|Location|Vector3 $position): bool {
+    public function checkCloudNPC(Location $position): bool {
         return isset($this->npcs[Utils::convertToString($position)]);
     }
 
-    public function getCloudNPC(Position|Location|Vector3 $position): ?CloudNPC {
+    public function getCloudNPC(Location $position): ?CloudNPC {
         return $this->npcs[Utils::convertToString($position)] ?? null;
     }
 
