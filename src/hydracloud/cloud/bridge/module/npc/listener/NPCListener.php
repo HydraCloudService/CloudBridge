@@ -128,7 +128,7 @@ final class NPCListener implements Listener {
                                                     "inGame.ui.cloudnpc.choose_template.button.template",
                                                     $template,
                                                     count(CloudAPI::players()->getAll($template = CloudAPI::templates()->get($template))),
-                                                    $template->getMaxPlayerCount()
+                                                    $template->getMaxPlayerCount() * count(CloudAPI::servers()->getAll($template))
                                                 )),
                                                 $templates = $cloudNPC->getTemplate()->getTemplates()
                                             ),
